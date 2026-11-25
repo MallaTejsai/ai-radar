@@ -1,0 +1,37 @@
+# Labelled evaluation set for the confidence threshold.
+#
+# Each line is one discovery case with the evidence facts the verifier would have
+# produced, plus a human label:
+#
+#     label 1 = worth storing and (if confirmed) worth alerting
+#     label 0 = should be discarded as not evidence-qualified
+#
+# This is a **seed set assembled by hand from realistic announcement shapes**, not
+# a statistically valid study. It exists so the operating threshold is derived
+# from measured precision/recall instead of being invented. Expand it before
+# trusting the number; the report records the current size and its limitation.
+
+{"case": "OpenAI flagship model launch, own blog + wire coverage", "verdict": "CONFIRMED", "tiers": ["A"], "domains": 3, "reachable": true, "date_verified": true, "label": 1}
+{"case": "Anthropic model card with licence and pricing page", "verdict": "CONFIRMED", "tiers": ["A"], "domains": 1, "reachable": true, "date_verified": true, "label": 1}
+{"case": "GitHub Copilot changelog entry, corroborated by GitHub blog", "verdict": "CONFIRMED", "tiers": ["A"], "domains": 2, "reachable": true, "date_verified": true, "label": 1}
+{"case": "Open-weight model on Hugging Face with a stated licence", "verdict": "CONFIRMED", "tiers": ["A"], "domains": 2, "reachable": true, "date_verified": true, "label": 1}
+{"case": "Coding tool release notes, single official domain", "verdict": "CONFIRMED", "tiers": ["A"], "domains": 1, "reachable": true, "date_verified": true, "label": 1}
+{"case": "Agent SDK release on GitHub with release notes", "verdict": "CONFIRMED", "tiers": ["A"], "domains": 1, "reachable": true, "date_verified": true, "label": 1}
+{"case": "Image model launch covered by vendor blog and press", "verdict": "CONFIRMED", "tiers": ["A"], "domains": 3, "reachable": true, "date_verified": true, "label": 1}
+{"case": "Speech API update with documented pricing", "verdict": "CONFIRMED", "tiers": ["A"], "domains": 2, "reachable": true, "date_verified": true, "label": 1}
+{"case": "Productivity tool changelog with AI feature", "verdict": "CONFIRMED", "tiers": ["A"], "domains": 1, "reachable": true, "date_verified": true, "label": 1}
+{"case": "Funding announcement reported by two outlets", "verdict": "CONFIRMED", "tiers": ["B"], "domains": 2, "reachable": true, "date_verified": true, "label": 1}
+{"case": "Regulatory change reported by one outlet only", "verdict": "PARTIAL", "tiers": ["B"], "domains": 1, "reachable": true, "date_verified": true, "label": 1}
+{"case": "Official announcement whose page refused a HEAD probe", "verdict": "PARTIAL", "tiers": ["A"], "domains": 1, "reachable": true, "date_verified": true, "label": 1}
+{"case": "Vendor claim relayed by an established outlet", "verdict": "PARTIAL", "tiers": ["B"], "domains": 1, "reachable": true, "date_verified": true, "label": 1}
+{"case": "Model release with an unusable publication date", "verdict": "PARTIAL", "tiers": ["A"], "domains": 1, "reachable": true, "date_verified": false, "label": 1}
+{"case": "Aggregator post claiming a free model, no corroboration", "verdict": "INSUFFICIENT", "tiers": ["C"], "domains": 1, "reachable": true, "date_verified": true, "label": 0}
+{"case": "Community screenshot of a rumoured release", "verdict": "CONFIRMED", "tiers": ["C"], "domains": 3, "reachable": true, "date_verified": true, "label": 0}
+{"case": "Undated forum post about an upcoming tool", "verdict": "INSUFFICIENT", "tiers": ["C"], "domains": 2, "reachable": true, "date_verified": false, "label": 0}
+{"case": "Entry whose page returns HTTP 404", "verdict": "DISPROVED", "tiers": ["A"], "domains": 1, "reachable": false, "date_verified": true, "label": 0}
+{"case": "Entry dated two weeks in the future", "verdict": "DISPROVED", "tiers": ["A"], "domains": 2, "reachable": true, "date_verified": false, "label": 0}
+{"case": "Unverified rumour relayed by one Tier B outlet", "verdict": "INSUFFICIENT", "tiers": ["B"], "domains": 1, "reachable": true, "date_verified": false, "label": 0}
+{"case": "Feed item with no date and no reachable evidence", "verdict": "INSUFFICIENT", "tiers": ["A"], "domains": 1, "reachable": false, "date_verified": false, "label": 0}
+{"case": "Duplicate headline scraped from a low-quality aggregator", "verdict": "INSUFFICIENT", "tiers": ["C"], "domains": 1, "reachable": true, "date_verified": true, "label": 0}
+{"case": "Marketing page with no verifiable product claim", "verdict": "INSUFFICIENT", "tiers": ["B"], "domains": 1, "reachable": true, "date_verified": true, "label": 0}
+{"case": "Stale entry outside the backlog window", "verdict": "PARTIAL", "tiers": ["B"], "domains": 1, "reachable": false, "date_verified": true, "label": 0}

@@ -1,0 +1,50 @@
+# Secrets - never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+service-account*.json
+client_secret*.json
+
+# Local credential notes (e.g. an extracted Telegram chat id)
+.tg-chat-id
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.venv*/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+
+# Runtime artefacts (must never be the source of production memory)
+artifacts/
+backups/
+*.jsonl.gz
+*.json.gz
+*.dump
+*.sql.gz
+*.bak
+*.log
+
+# Test / scan output
+report.xml
+coverage.xml
+htmlcov/
+.scan/
+
+# Local tooling and editor state
+.claude/
+.freebuff/
+.vscode/
+.idea/
+.zwork/

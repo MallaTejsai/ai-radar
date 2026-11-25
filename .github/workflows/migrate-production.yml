@@ -1,0 +1,76 @@
+name: migrate-production
+
+# The ONLY workflow allowed to change the production schema.
+#
+# Safeguards, in order of enforcement:
+#   1. It cannot be triggered by a push, a pull request or a schedule - only by a
+#      human typing the confirmation string in Run workflow.
+#   2. `environment: production` must be configured in
+#      Settings -> Environments with Required reviewers. Without that approval the
+#      job never starts.
+#   3. A verified Google Drive backup must succeed *before* any DDL runs. If the
+#      backup fails, the migration does not run.
+#   4. `doctor --database-only` runs afterwards and must pass.
+#
+# Ordinary CI (`tests.yml`) never receives this secret.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type migrate-production to confirm you have a verified backup'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ai-radar-migrate-production
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    if: ${{ inputs.confirm == 'migrate-production' }}
+    environment: production
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONPATH: src
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+      GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+      GOOGLE_OAUTH_REFRESH_TOKEN: ${{ secrets.GOOGLE_OAUTH_REFRESH_TOKEN }}
+      GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+      AI_RADAR_LOG_LEVEL: INFO
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.lock
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.lock
+
+      - name: Require a database credential
+        run: |
+          if [ -z "${DATABASE_URL}" ]; then
+            echo "DATABASE_URL is not configured; refusing to migrate."
+            exit 1
+          fi
+
+      - name: Show the pending migration list (read-only)
+        run: python -m ai_radar doctor --database-only
+        continue-on-error: true
+
+      - name: Take a verified backup before migrating
+        # Uploads, downloads and SHA-256-compares the export. Fails closed.
+        run: python -m ai_radar backup --retention 12
+
+      - name: Apply pending migrations
+        run: python -m ai_radar migrate
+
+      - name: Verify the schema afterwards
+        run: python -m ai_radar doctor --database-only

@@ -1,0 +1,67 @@
+# The seven research categories. Keys must match ai_radar.models.core.Category.
+# priority_weight is documentation-only; scoring uses category_usefulness in
+# scoring.yaml so there is exactly one place to tune relevance.
+
+categories:
+  ai_models:
+    display_name: AI Models
+    description: Foundation, multimodal, specialised and open-weight model releases and updates.
+    subcategories:
+      - foundation_models
+      - multimodal_models
+      - specialised_models
+      - open_weight_models
+
+  ai_coding_tools:
+    display_name: AI Coding Tools
+    description: AI code editors, completion engines, coding agents and developer tooling.
+    subcategories:
+      - code_editors
+      - code_completion
+      - code_agents
+      - debugging_tools
+
+  ai_agents:
+    display_name: AI Agents
+    description: Autonomous and semi-autonomous agent frameworks, SDKs and runtimes.
+    subcategories:
+      - agent_frameworks
+      - multi_agent_systems
+      - tool_use_agents
+      - reasoning_agents
+
+  image_video_ai:
+    display_name: Image & Video AI
+    description: Text-to-image, text-to-video, editing and generative media models.
+    subcategories:
+      - text_to_image
+      - text_to_video
+      - image_edit
+      - generative_media_tools
+
+  audio_speech_ai:
+    display_name: Audio & Speech AI
+    description: Text-to-speech, speech-to-text, voice cloning and music generation.
+    subcategories:
+      - text_to_speech
+      - speech_to_text
+      - voice_cloning
+      - music_generation
+
+  productivity_tools:
+    display_name: Productivity Tools
+    description: AI-enhanced productivity software, workflow automation and integrations.
+    subcategories:
+      - note_taking
+      - meeting_assistants
+      - workflow_automation
+      - document_ai
+
+  ai_industry_updates:
+    display_name: AI Industry Updates
+    description: Company announcements, funding, regulation and market-level developments.
+    subcategories:
+      - company_news
+      - funding_rounds
+      - regulatory_updates
+      - market_trends

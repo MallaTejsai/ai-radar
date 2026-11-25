@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-radar"
+version = "1.0.0"
+description = "AI Radar V1.0 - cloud-hosted autonomous AI research agent"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Proprietary" }
+dependencies = [
+    "pydantic>=2.9,<3",
+    "pydantic-settings>=2.4,<3",
+    "httpx>=0.27,<0.29",
+    "psycopg[binary]>=3.2,<4",
+    "psycopg-pool>=3.2,<4",
+    "feedparser>=6.0,<7",
+    "python-dateutil>=2.9",
+    "structlog>=24.1",
+    "PyYAML>=6.0,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+]
+
+[project.scripts]
+ai-radar = "ai_radar.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Make the source tree importable without installing the package, so a fresh
+# clone (and CI, which installs only requirements.lock) can run the suite.
+pythonpath = ["src"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-q --strict-markers"
+markers = [
+    "postgres: requires a real PostgreSQL instance (TEST_DATABASE_URL)",
+    "live: requires real provider credentials and network access",
+]
+filterwarnings = [
+    "error::DeprecationWarning:ai_radar.*",
+]

@@ -1,0 +1,94 @@
+name: tests
+
+# Continuous integration only. This workflow never has a database credential and
+# never applies a migration: production schema changes live in
+# `.github/workflows/migrate-production.yml`, which is manual and approval-gated.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.lock
+            requirements-test.txt
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.lock
+          # The test toolchain is pinned in a checked-in file, not inline here, so
+          # CI and a local run install exactly the same versions.
+          pip install -r requirements-test.txt
+      - name: Byte-compile every module
+        run: python -m compileall -q src
+      - name: Unit and failure tests
+        run: python -m pytest -m "not postgres and not live" --junitxml=report.xml
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-${{ matrix.python-version }}
+          path: report.xml
+          retention-days: 7
+
+  secret-scan:
+    # Fails the build if a credential shape appears in the working tree or in
+    # any commit. Prints the file, commit and credential type only - never the
+    # matched value.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: a secret that was committed and deleted is still public.
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Scan the working tree and the full Git history
+        run: python scripts/check_secrets.py --history
+
+  dependency-audit:
+    # Advisory: a newly disclosed CVE should be visible in CI, but it must not
+    # block an unrelated fix. Review the summary and upgrade deliberately.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Audit pinned dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-audit
+          pip-audit -r requirements.lock
+
+  dependency-review:
+    # Runs only on pull requests, where GitHub can diff the dependency manifests.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high

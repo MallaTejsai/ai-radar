@@ -1,0 +1,9 @@
+﻿pydantic
+pydantic-settings
+httpx
+psycopg[binary]
+psycopg-pool
+feedparser
+python-dateutil
+structlog
+PyYAML
