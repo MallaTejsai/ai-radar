@@ -1,0 +1,252 @@
+# AI Radar V1.0 - curated source registry.
+#
+# Every endpoint below was probed on 2026-11-23 and returned HTTP 200 with a
+# parsable feed or JSON body (see docs/sources.md for the probe table). Sources
+# that returned 404/empty at that time were rejected rather than shipped.
+#
+# Tiers
+#   A - official announcement / official docs / official release / publisher model card
+#   B - established technical reporting or independent technical analysis
+#   C - community, social or aggregator: may identify a candidate but may never
+#       establish a fact on its own.
+#
+# V1 deliberately ships no Tier C source: by policy a Tier C-only discovery is
+# capped below the alert threshold, so subscribing to one would burn quota to
+# produce rows that are always discarded. The Tier C gate is implemented and
+# covered by tests; add a C source here only when you also add corroborating
+# A/B sources for the same topic.
+#
+# Methods
+#   rss                 - RSS/Atom feed (ETag + Last-Modified conditional GET)
+#   github_releases     - GitHub REST releases endpoint
+#   huggingface_models  - Hugging Face Hub models API
+
+sources:
+  # ---------------------------------------------------------------- AI models
+  - id: openai_news
+    name: OpenAI News
+    category: ai_models
+    tier: A
+    method: rss
+    url: https://openai.com/news/rss.xml
+    max_items: 30
+    notes: Official OpenAI announcement feed; 657 entries at probe time, so max_items caps volume.
+
+  - id: google_ai_blog
+    name: Google AI Blog
+    category: ai_models
+    tier: A
+    method: rss
+    url: https://blog.google/technology/ai/rss/
+    max_items: 30
+    notes: Official Google AI product/research announcements.
+
+  - id: deepmind_blog
+    name: Google DeepMind Blog
+    category: ai_models
+    tier: A
+    method: rss
+    url: https://deepmind.google/blog/rss.xml
+    max_items: 30
+    notes: Official DeepMind publication feed.
+
+  - id: hf_blog
+    name: Hugging Face Blog
+    category: ai_models
+    tier: A
+    method: rss
+    url: https://huggingface.co/blog/feed.xml
+    max_items: 30
+    notes: Publisher-side announcements for open models and libraries.
+
+  - id: microsoft_research
+    name: Microsoft Research Blog
+    category: ai_models
+    tier: A
+    method: rss
+    url: https://www.microsoft.com/en-us/research/feed/
+    max_items: 20
+    notes: Research lab publication feed.
+
+  # ---------------------------------------------------------- AI coding tools
+  - id: github_blog
+    name: GitHub Blog
+    category: ai_coding_tools
+    tier: A
+    method: rss
+    url: https://github.blog/feed/
+    max_items: 20
+    notes: Official GitHub product announcements.
+
+  - id: github_copilot_changelog
+    name: GitHub Copilot Changelog
+    category: ai_coding_tools
+    tier: A
+    method: rss
+    url: https://github.blog/changelog/label/copilot/feed/
+    max_items: 20
+    notes: Official Copilot release notes - the canonical changelog for this category.
+
+  - id: vscode_updates
+    name: Visual Studio Code Updates
+    category: ai_coding_tools
+    tier: A
+    method: rss
+    url: https://code.visualstudio.com/feed.xml
+    max_items: 20
+    notes: Official VS Code release notes; AI features ship here first.
+
+  - id: replit_blog
+    name: Replit Blog
+    category: ai_coding_tools
+    tier: A
+    method: rss
+    url: https://blog.replit.com/feed.xml
+    max_items: 20
+    notes: Official Replit product feed (agentic coding).
+
+  # --------------------------------------------------------------- AI agents
+  - id: crewai_releases
+    name: CrewAI Releases
+    category: ai_agents
+    tier: A
+    method: github_releases
+    url: https://api.github.com/repos/crewAIInc/crewAI/releases?per_page=20
+    max_items: 20
+    notes: Official release artefacts for a widely used agent framework.
+
+  - id: autogen_releases
+    name: Microsoft AutoGen Releases
+    category: ai_agents
+    tier: A
+    method: github_releases
+    url: https://api.github.com/repos/microsoft/autogen/releases?per_page=20
+    max_items: 20
+    notes: Official AutoGen releases.
+
+  - id: openai_agents_releases
+    name: OpenAI Agents SDK Releases
+    category: ai_agents
+    tier: A
+    method: github_releases
+    url: https://api.github.com/repos/openai/openai-agents-python/releases?per_page=20
+    max_items: 20
+    notes: Official Agents SDK releases.
+  # --------------------------------------------------------- Image & video AI
+  - id: replicate_blog
+    name: Replicate Blog
+    category: image_video_ai
+    tier: A
+    method: rss
+    url: https://replicate.com/blog/rss
+    max_items: 25
+    notes: Official model-hosting announcements covering image/video launches.
+
+  - id: fal_blog
+    name: fal.ai Blog
+    category: image_video_ai
+    tier: A
+    method: rss
+    url: https://blog.fal.ai/rss/
+    max_items: 25
+    notes: Official fal.ai generative-media announcements.
+
+  - id: comfyui_releases
+    name: ComfyUI Releases
+    category: image_video_ai
+    tier: A
+    method: github_releases
+    url: https://api.github.com/repos/comfyanonymous/ComfyUI/releases?per_page=20
+    max_items: 20
+    notes: Official releases of the dominant local image/video workflow tool.
+
+  - id: hf_image_models
+    name: Hugging Face - new text-to-image models
+    category: image_video_ai
+    tier: A
+    method: huggingface_models
+    url: https://huggingface.co/api/models?sort=createdAt&direction=-1&limit=30&filter=text-to-image
+    max_items: 25
+    min_likes: 3
+    min_downloads: 200
+    notes: >
+      Hub API listing, newest first. Uncurated repositories are dominated by
+      throwaway uploads (a bare `Testtyu`-style repo scores zero substance), so
+      this source requires min_likes=3 and min_downloads=200 before an entry is
+      even considered. Trade-off: a brand-new model that has not yet accumulated
+      usage is missed; docs/sources.md records how to relax this.
+
+  # -------------------------------------------------------- Audio & speech AI
+  - id: elevenlabs_blog
+    name: ElevenLabs Blog
+    category: audio_speech_ai
+    tier: A
+    method: rss
+    url: https://elevenlabs.io/blog/rss.xml
+    max_items: 25
+    notes: Official TTS / voice product announcements.
+
+  - id: suno_blog
+    name: Suno Blog
+    category: audio_speech_ai
+    tier: A
+    method: rss
+    url: https://suno.com/blog/rss.xml
+    max_items: 20
+    notes: Official generative-audio product feed.
+
+  - id: whisper_releases
+    name: OpenAI Whisper Releases
+    category: audio_speech_ai
+    tier: A
+    method: github_releases
+    url: https://api.github.com/repos/openai/whisper/releases?per_page=20
+    max_items: 20
+    notes: Official speech-recognition reference implementation releases.
+
+  # -------------------------------------------------------- Productivity tools
+  - id: linear_changelog
+    name: Linear Changelog
+    category: productivity_tools
+    tier: A
+    method: rss
+    url: https://linear.app/rss/changelog.xml
+    max_items: 20
+    notes: Official changelog; Linear ships AI features continuously.
+
+  - id: slack_engineering
+    name: Slack Engineering
+    category: productivity_tools
+    tier: A
+    method: rss
+    url: https://slack.engineering/feed/
+    max_items: 15
+    notes: Official engineering blog for a core productivity platform.
+
+  - id: zapier_blog
+    name: Zapier Blog
+    category: productivity_tools
+    tier: A
+    method: rss
+    url: https://zapier.com/blog/feeds/latest/
+    max_items: 20
+    notes: Official automation-platform feed; AI-in-workflow features surface here.
+
+  # ------------------------------------------------------ AI industry updates
+  - id: techcrunch_ai
+    name: TechCrunch AI
+    category: ai_industry_updates
+    tier: B
+    method: rss
+    url: https://techcrunch.com/category/artificial-intelligence/feed/
+    max_items: 20
+    notes: Established technical reporting (Tier B) - supplements but never replaces A-tier evidence.
+
+  - id: verge_ai
+    name: The Verge - AI
+    category: ai_industry_updates
+    tier: B
+    method: rss
+    url: https://www.theverge.com/rss/ai-artificial-intelligence/index.xml
+    max_items: 20
+    notes: Established technical reporting (Tier B) for industry-level developments.

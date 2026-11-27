@@ -1,0 +1,108 @@
+# Priority scoring, confidence policy and deterministic signal vocabulary.
+#
+# Priority (0-100) is a weighted sum of five sub-scores in 0..1. The weights must
+# total 100 - the loader rejects any other total.
+#
+# Confidence (0..1) is a *separate* measurement derived from evidence quality. It
+# is not a rescaled priority score, and it drives the discard gate, not the alert
+# ranking.
+
+weights:
+  technical_significance: 30
+  personal_usefulness: 25
+  availability_accessibility: 20
+  novelty: 15
+  evidence_quality: 10
+
+alert:
+  # 40 == 3/5. Anything below this never reaches Telegram.
+  min_priority_score: 40
+  # Operating confidence threshold. Overridden by config/confidence_thresholds.json
+  # once the labelled evaluation has been run (see scripts/evaluate_confidence.py).
+  min_confidence: 0.55
+  min_confidence_for_digest: 0.55
+  max_alerts_per_run: 5
+
+confidence:
+  discard_below: 0.55
+  calibration_file: confidence_thresholds.json
+
+# How much the agent's owner cares about each category (0..1).
+# This is the "personal usefulness" input; it is configuration, not intelligence.
+category_usefulness:
+  ai_coding_tools: 0.95
+  ai_models: 0.85
+  ai_agents: 0.80
+  productivity_tools: 0.70
+  image_video_ai: 0.55
+  audio_speech_ai: 0.45
+  ai_industry_updates: 0.35
+
+# Deterministic vocabulary. Matching is case-insensitive on the normalised
+# title + summary. Keep entries lowercase.
+signals:
+  major_release:
+    - new model
+    - flagship
+    - state of the art
+    - general availability
+    - now available
+    - introduces
+    - announces
+    - launches
+    - open weights
+    - released
+  minor_update:
+    - patch
+    - hotfix
+    - bug fix
+    - maintenance
+    - documentation
+    - typo
+  capability:
+    - multimodal
+    - reasoning
+    - agentic
+    - tool use
+    - function calling
+    - code generation
+    - long context
+    - fine-tuning
+    - speech
+    - image generation
+    - video generation
+    - voice cloning
+    - real-time
+    - on-device
+  free_signal:
+    - free tier
+    - free plan
+    - no cost
+    - at no charge
+    - always free
+    - free to use
+  open_source_signal:
+    - open source
+    - open-source
+    - apache 2.0
+    - mit license
+    - open weights
+    - weights released
+  paid_signal:
+    - per seat
+    - enterprise plan
+    - pricing starts
+    - subscription
+    - usage-based pricing
+    - credits
+  free_trial_signal:
+    - free trial
+    - try for free
+    - 14-day trial
+    - 7-day trial
+  deprecation_signal:
+    - deprecat
+    - sunset
+    - end of life
+    - retired
+    - no longer supported

@@ -1,0 +1,44 @@
+# Deployment schedule policy (non-secret).
+#
+# This file is the single place where the intended schedule is written down.
+# `ai-radar doctor` parses .github/workflows/*.yml and fails the check when the
+# cron expressions drift from these values, so a silently edited workflow cannot
+# quietly change the research window.
+#
+# All crons are UTC. IST is UTC+05:30, hence the offsets below.
+
+schedule:
+  research:
+    cron_utc: "30 2-16 * * *"
+    window_ist_start: "08:00"
+    window_ist_end: "22:00"
+    note: >
+      Hourly at :30 between 08:00 and 22:00 IST. 02:30-16:30 UTC == 08:00-22:00
+      IST because IST is UTC+05:30, so the actual UTC firing minute is :30.
+      15 runs per day.
+  digest:
+    cron_utc: "5 17 * * *"
+    window_ist_start: "22:35"
+    note: >
+      Deliberately 35 minutes after the final research run of the day
+      (22:00 IST) so the digest is always built from a completed day. A
+      literal 22:00 IST digest would race the last research pass.
+  backup:
+    cron_utc: "30 17 * * 0"
+    window_ist_start: "23:00"
+    note: Weekly, Sunday 23:00 IST.
+  maintenance:
+    cron_utc: "15 1 * * *"
+    window_ist_start: "06:45"
+    note: Daily pre-window health check, before the first research run.
+
+limits:
+  max_alerts_per_run: 5
+  recovery_window_hours: 24
+  max_analyses_per_run: 40
+  # Fallback only. Staleness is normally judged against the most recent scheduled
+  # slot plus a 60-minute grace, so the deliberate 22:00-08:00 gap never pages.
+  stale_after_minutes: 150
+  # Backlog protection: a discovery older than this is stored but never alerted,
+  # so recovering a gap cannot flood Telegram with old news.
+  alert_max_age_hours: 48

@@ -1,0 +1,11 @@
+{
+  "calibrated": true,
+  "threshold": 0.57,
+  "n_samples": 24,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1": 1.0,
+  "generated_at": "2026-11-23T18:12:05.950097+00:00",
+  "dataset": "tests/evaluation/labels.jsonl",
+  "note": "Threshold derived from a hand-labelled seed set via maximum-margin separation; not a statistically validated calibration."
+}

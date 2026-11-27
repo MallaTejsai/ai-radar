@@ -1,0 +1,284 @@
+# Curated source registry for AI Radar V1.0
+# 15-25 official sources covering all 7 categories
+# Tier A: Official announcements, official documentation, official GitHub releases and publisher model cards
+# Tier B: Established technical reporting and independent technical analysis
+# Tier C: Community discussions, social media and aggregators (can identify potential but not establish facts)
+
+sources:
+  # ===== AI MODELS =====
+  - id: "anthropic_claude"
+    name: "Anthropic Claude Blog"
+    url: "https://www.anthropic.com/blog"
+    url_type: "rss"
+    category: "ai_models"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "openai_blog"
+    name: "OpenAI Blog"
+    url: "https://blog.openai.com"
+    url_type: "rss"
+    category: "ai_models"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "google_aiblog"
+    name: "Google AI Blog"
+    url: "https://blog.google/ai"
+    url_type: "rss"
+    category: "ai_models"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "deepmind"
+    name: "DeepMind Publications"
+    url: "https://deepmind.google/publications"
+    url_type: "rss"
+    category: "ai_models"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  # ===== AI CODING TOOLS =====
+  - id: "github_copilot"
+    name: "GitHub Copilot Blog"
+    url: "https://github.com/blog/topic/copilot"
+    url_type: "rss"
+    category: "ai_coding_tools"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "cursor_blog"
+    name: "Cursor Blog"
+    url: "https://blog.cursor.so"
+    url_type: "rss"
+    category: "ai_coding_tools"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "windsurf_changelog"
+    name: "WindSurf Changelog"
+    url: "https://www.windsurf.com/changelog"
+    url_type: "page"
+    category: "ai_coding_tools"
+    tier: "A"
+    enabled: true
+    collection_method: "http_get"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  # ===== AI AGENTS =====
+  - id: "autogen_blog"
+    name: "AutoGen Blog"
+    url: "https://microsoft.com/en-us/research/blog/autogen/"
+    url_type: "rss"
+    category: "ai_agents"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "crewai"
+    name: "CrewAI News"
+    url: "https://www.crewai.com/blog"
+    url_type: "rss"
+    category: "ai_agents"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "agentic_io"
+    name: "Agentic Insights"
+    url: "https://agentic.io"
+    url_type: "rss"
+    category: "ai_agents"
+    tier: "B"
+    enabled: true
+    collection_method: "http_get"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  # ===== IMAGE & VIDEO AI =====
+  - id: "runwayml"
+    name: "Runway ML Blog"
+    url: "https://runwayml.com/blog"
+    url_type: "rss"
+    category: "image_video_ai"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "luma_ai"
+    name: "Luma AI"
+    url: "https://luma.ai/blog"
+    url_type: "rss"
+    category: "image_video_ai"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "stable_diffusion"
+    name: "Stable Diffusion Updates"
+    url: "https://stability.ai/blog"
+    url_type: "rss"
+    category: "image_video_ai"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  # ===== AUDIO & SPEECH AI =====
+  - id: "elevenlabs"
+    name: "ElevenLabs Blog"
+    url: "https://elevenlabs.io/blog"
+    url_type: "rss"
+    category: "audio_speech_ai"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "openai_tts"
+    name: "OpenAI TTS Announcements"
+    url: "https://openai.com/blog/whisper-updates"
+    url_type: "rss"
+    category: "audio_speech_ai"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "descript"
+    name: "Descript Updates"
+    url: "https://www.descript.com/blog"
+    url_type: "rss"
+    category: "audio_speech_ai"
+    tier: "B"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  # ===== PRODUCTIVITY TOOLS =====
+  - id: "notion_blog"
+    name: "Notion Blog"
+    url: "https://www.notion.so/blog"
+    url_type: "rss"
+    category: "productivity_tools"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "microsoft_365"
+    name: "Microsoft 365 Blog"
+    url: "https://www.microsoft.com/en-us/microsoft-365/blog"
+    url_type: "rss"
+    category: "productivity_tools"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "slack_blog"
+    name: "Slack Blog"
+    url: "https://slack.com/blog"
+    url_type: "rss"
+    category: "productivity_tools"
+    tier: "A"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  # ===== AI INDUSTRY UPDATES =====
+  - id: "ai_try_gov"
+    name: "AI Try Gov (Industry News)"
+    url: "https://www.ai.gov/news"
+    url_type: "rss"
+    category: "ai_industry_updates"
+    tier: "B"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: " venture_beat_ai"
+    name: "VentureBeat AI"
+    url: "https://venturebeat.com/ai/"
+    url_type: "rss"
+    category: "ai_industry_updates"
+    tier: "B"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+  - id: "techcrunch_ai"
+    name: "TechCrunch AI"
+    url: "https://techcrunch.com/tag/artificial-intelligence/"
+    url_type: "rss"
+    category: "ai_industry_updates"
+    tier: "C"
+    enabled: true
+    collection_method: "rss_poll"
+    checkpoint: null
+    last_error: null
+    health_status: "healthy"
+
+# Summary:
+# Total sources: 17
+# Tier A: 11 sources
+# Tier B: 4 sources
+# Tier C: 2 sources
+# Categories covered: 7 (ai_models, ai_coding_tools, ai_agents, image_video_ai, audio_speech_ai, productivity_tools, ai_industry_updates)

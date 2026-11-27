@@ -1,0 +1,7 @@
+# Test-only toolchain. Runtime dependencies live in requirements.lock.
+#
+# These versions were verified against this suite. CI installs this file instead
+# of hard-coding versions in a workflow step, so a local run and a CI run use
+# exactly the same test stack.
+pytest==9.2.0
+pytest-asyncio==1.5.0

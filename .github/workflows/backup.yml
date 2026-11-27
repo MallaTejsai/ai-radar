@@ -1,0 +1,99 @@
+name: backup
+
+# Sunday 23:00 IST = Sunday 17:30 UTC.
+on:
+  schedule:
+    - cron: "30 17 * * 0"
+  workflow_dispatch:
+    inputs:
+      verify_only:
+        description: "Verify the newest backup without restoring it"
+        type: boolean
+        default: false
+
+concurrency:
+  group: ai-radar-backup
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    # DEPLOYMENT GATE - see research.yml. Requires vars.SCHEDULES_ENABLED=true.
+    if: ${{ github.event_name != 'schedule' || vars.SCHEDULES_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Repo-root execution: `python -m ai_radar` resolves the package here.
+      PYTHONPATH: src
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+      GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+      GOOGLE_OAUTH_REFRESH_TOKEN: ${{ secrets.GOOGLE_OAUTH_REFRESH_TOKEN }}
+      GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+      AI_RADAR_LOG_LEVEL: INFO
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.lock
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.lock
+
+      - name: Export, upload and verify
+        if: ${{ inputs.verify_only != 'true' }}
+        run: python -m ai_radar backup --retention 12
+
+      - name: Verify newest backup
+        if: ${{ inputs.verify_only == 'true' }}
+        run: python -m ai_radar restore --verify-only
+
+      # A backup that silently stopped running is the worst failure mode here.
+      # The ping URL is never echoed.
+      - name: Signal failure to the external monitor
+        if: failure()
+        continue-on-error: true
+        env:
+          HEALTHCHECKS_PING_URL: ${{ secrets.HEALTHCHECKS_PING_URL }}
+        run: |
+          if [ -n "${HEALTHCHECKS_PING_URL}" ]; then
+            curl -fsS --max-time 10 --retry 2 "${HEALTHCHECKS_PING_URL%/}/fail" > /dev/null || true
+          fi
+
+  # Optional restore rehearsal. Only runs when a separate restore database is
+  # configured, because restoring into production is refused by design.
+  restore-rehearsal:
+    needs: backup
+    # Both gates apply: schedules must be enabled AND the rehearsal opted into.
+    if: ${{ (github.event_name != 'schedule' || vars.SCHEDULES_ENABLED == 'true') && vars.RESTORE_REHEARSAL == 'enabled' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Repo-root execution: `python -m ai_radar` resolves the package here.
+      PYTHONPATH: src
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      RESTORE_DATABASE_URL: ${{ secrets.RESTORE_DATABASE_URL }}
+      GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+      GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+      GOOGLE_OAUTH_REFRESH_TOKEN: ${{ secrets.GOOGLE_OAUTH_REFRESH_TOKEN }}
+      GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.lock
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.lock
+      - name: Restore into the isolated database
+        run: python -m ai_radar restore

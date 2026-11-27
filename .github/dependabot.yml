@@ -1,0 +1,24 @@
+version: 2
+
+# Security updates only. The runtime dependencies are pinned exactly in
+# requirements.lock, so a version bump is a reviewed commit, not a silent install.
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 3
+    groups:
+      runtime:
+        patterns: ["*"]
+    commit-message:
+      prefix: "deps"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "ci"
